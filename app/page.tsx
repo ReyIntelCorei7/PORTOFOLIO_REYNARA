@@ -1,103 +1,152 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { SiReact, SiTailwindcss } from "react-icons/si";
+
+// Custom Components
+import GooeyNav from "./komponen/GooeyNav/GooeyNav";
+import ClickSpark from "./komponen/ClickSpark/ClickSpark";
+import LogoLoop from "./komponen/LogoLoop/LogoLoop";
+
+// Section Components
+import { HeroSection, AboutSection, PortfolioSection, ContactSection } from "./sections";
+
+// Navigation Items with section IDs
+const navItems = [
+  { label: "Home", href: "#hero-section" },
+  { label: "Porto", href: "#Porto" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#Contact" },
+];
+
+// Section IDs mapped to nav index
+const sectionIds = ["hero-section", "Porto", "about", "Contact"];
+
+// Technology Logos for Logo Loop
+const technologyLogos = [
+  {
+    src: "/logo/figma.png",
+    alt: "Figma",
+    href: "https://www.figma.com/",
+  },
+  { 
+    node: <SiReact />, 
+    title: "React", 
+    href: "https://react.dev" 
+  },
+  {
+    src: "/logo/laravel.png",
+    alt: "Laravel",
+    href: "https://laravel.com/",
+  },
+  {
+    node: <SiTailwindcss />,
+    title: "Tailwind CSS",
+    href: "https://tailwindcss.com",
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [activeNavIndex, setActiveNavIndex] = useState(0);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  // Intersection Observer to detect active section
+  useEffect(() => {
+    const observerOptions = {
+      root: null, // viewport
+      rootMargin: "-20% 0px -60% 0px", // trigger when section is near center
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          const index = sectionIds.indexOf(sectionId);
+          if (index !== -1) {
+            setActiveNavIndex(index);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observe all sections
+    sectionIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="body min-h-screen w-full bg-destructive overflow-x-hidden">
+      {/* Scroll Progress Bars */}
+      <div className="bar-right" />
+      <div className="bar-left" />
+
+      <ClickSpark
+        sparkColor="#fff"
+        sparkSize={10}
+        sparkRadius={30}
+        sparkCount={15}
+        duration={400}
+      >
+        {/* Navigation */}
+        <nav id="navbar" className="fixed top-0 left-0 right-0 z-30">
+          <div className="flex justify-center w-full z-30">
+            <GooeyNav
+              items={navItems}
+              particleCount={15}
+              particleDistances={[90, 10]}
+              particleR={100}
+              initialActiveIndex={0}
+              activeIndex={activeNavIndex}
+              onActiveChange={setActiveNavIndex}
+              animationTime={600}
+              timeVariance={300}
+              colors={[1, 2, 3, 1, 2, 3, 1, 4]}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          </div>
+        </nav>
+
+        {/* Main Content Container with consistent margins */}
+        <main className="px-6 md:px-12 lg:px-20 xl:px-28">
+          {/* Hero Section */}
+          <HeroSection />
+
+          {/* Portfolio Section */}
+          <PortfolioSection />
+        </main>
+
+        {/* Technology Logo Loop - Full Width */}
+        <LogoLoop
+          logos={technologyLogos}
+          speed={120}
+          direction="left"
+          logoHeight={48}
+          gap={40}
+          pauseOnHover
+          scaleOnHover
+          fadeOut
+          fadeOutColor="#030712"
+          ariaLabel="Technology partners"
+          className="w-full"
+        />
+
+        {/* About & Contact Section with margins */}
+        <main className="px-6 md:px-12 lg:px-20 xl:px-28">
+          <div id="about" className="min-h-screen py-16">
+            <AboutSection />
+          </div>
+          <div id="Contact" className="py-16">
+            <ContactSection />
+          </div>
+        </main>
+      </ClickSpark>
     </div>
   );
 }

@@ -1,0 +1,9 @@
+// Barrel export for all sections
+export { HeroSection } from "./HeroSection";
+export { AboutSection } from "./AboutSection";
+export { PortfolioSection } from "./PortfolioSection";
+export { ContactSection } from "./ContactSection";
+export { ThreeDCardDemo } from "./ThreeDCardDemo";
+export { TabsDemo } from "./TabsDemo";
+export { FloatingDockDemo } from "./FloatingDockDemo";
+export { SparklesPreview } from "./SparklesPreview";
